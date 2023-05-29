@@ -1,12 +1,13 @@
 import logo from "./logo.svg";
 import "./App.css";
 
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useState, useRef, useMemo } from "react";
 import { useEffect } from "react";
 
 import ValueHolder from "./components/ValueHolder/ValueHolder";
 
 import User from "./components/User/User";
+import Users from "./components/Users/Users";
 
 //Create A Variable
 //We need two functions - inc , dec
@@ -23,18 +24,18 @@ function App() {
 
   const increment = useCallback(() => {
     console.log("Modifying X");
-     setX((prevX) => {
+    setX((prevX) => {
       return prevX + 1;
-    }); 
+    });
     //setX(x+1);
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     increment();
-  },[increment])
+  }, [increment]);
 
   //mount function
-  useEffect(() => {
+  /* useEffect(() => {
     //API call techniques
     //old technique - XMLHttpRequest - Callback
     //new technique - fetch - Promise
@@ -43,8 +44,7 @@ function App() {
       .then((res) => res.json())
       .then((users) => setUsers(users))
       .catch((err) => console.log(err));
-   
-  }, []);
+  }, []); */
 
   //useEffect is executed after the render
   //Updater
@@ -54,9 +54,11 @@ function App() {
   }, [x]);
 
   const decrement = useCallback(() => {
+    console.time();
     setX((prevX) => {
       return prevX - 1;
     });
+    console.timeEnd();
   }, []);
 
   /*   console.time("increment")
@@ -71,25 +73,40 @@ function App() {
     setX(x-1);
   }, [x]); */
 
+  const usersUI = useMemo(() => {
+    const list = users.map((user) => {
+      return (
+        /*  <User name={user.name} 
+             username={user.username} 
+             email={user.email}></User> */
+        <User key={user.id} {...user}></User>
+      );
+    });
+    console.log(users, list);
+    return list;
+  }, [users]);
+
+  const buttonsUI = useMemo(() => {
+    return (
+      <>
+        <button id="addBtn" type="button" onClick={increment}>
+          Add
+        </button>
+        <button id="minusBtn" type="button" onClick={decrement}>
+          minus
+        </button>
+      </>
+    );
+  }, [increment, decrement]);
+
   return (
     <div className="App">
-      <button id="addBtn" type="button" onClick={increment}>
-        Add
-      </button>
-      <button id="minusBtn" type="button" onClick={decrement}>
-        minus
-      </button>
+      {buttonsUI}
+      <ValueHolder x={x}></ValueHolder>
 
-      <ValueHolder abcd={x}></ValueHolder>
+      {/* {usersUI} */}
 
-      {users.map((user) => {
-        return (
-              /*  <User name={user.name} 
-               username={user.username} 
-               email={user.email}></User> */
-               <User {...user}></User>
-        );
-      })}
+      <Users></Users>
     </div>
   );
 }

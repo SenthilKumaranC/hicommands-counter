@@ -1,8 +1,10 @@
+import "./User.css";
+
 const User = (props)=>{
-    return <div>
-    <span>{props.name}</span>
-    <span>{props.username}</span>
-    <span>{props.email}</span>
+    return <div className="User">
+    <span className="Cell">{props.name}</span>
+    <span className="Cell">{props.username}</span>
+    <span className="Cell">{props.email}</span>
     {/* <span>{JSON.stringify(props.address.doorNo)}</span> */}
   </div>
 }
